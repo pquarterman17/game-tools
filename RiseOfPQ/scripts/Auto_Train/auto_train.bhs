@@ -1,0 +1,89 @@
+// Auto_Train -- Rise of PQ standalone script
+// Periodically queues units for the human player so you don't have to
+// click-spam production buildings. Training pays normal resource costs
+// and uses the normal queue; if a building is busy or you can't afford
+// it, the request is simply skipped that cycle.
+//
+// train_unit() resolves to your CURRENT upgrade and nation-unique
+// variant of the requested line, so the names below stay valid in
+// every age (engine behavior: current_upgrade + get_graft).
+//
+// Select this script in the game setup screen (same place as the
+// built-in "Auto Pause" / "No Nukes" scripts). Single-player intended.
+
+scenario {
+
+  //=========================== CONFIG =============================
+  // Seconds between production checks
+  static int interval = 15;
+
+  // -- Auto Citizen level: forces the engine's built-in citizen
+  //    automation each game (same as Options -> "Auto Citizen").
+  //    Idle citizens automatically gather, join construction, and
+  //    repair damaged buildings.
+  //      0 = Gather   1 = Build and Gather   2 = Build   3 = Idle (off)
+  //    Set to -1 to leave your profile's option untouched.
+  static int auto_citizen_level = 1;
+
+  // -- Citizens: queue more only while you have fewer than this many
+  //    idle (i.e. everyone is employed). 0 disables citizen training.
+  static int citizen_idle_threshold = 1;
+  static int citizen_batch = 2;
+
+  // -- Scholars: tries to queue at a university each cycle; skipped
+  //    automatically when all universities are full. 1=on, 0=off.
+  static int auto_scholars = 1;
+
+  // -- Military lines (1=on, 0=off). Each queues one unit per cycle.
+  //    Names are the Ancient Age line; the engine upgrades them to
+  //    your current age / nation automatically.
+  static int auto_heavy_infantry = 0;   // Hoplites line (barracks)
+  static int auto_light_infantry = 0;   // Slingers line (barracks)
+  static int auto_archers = 0;          // Bowmen line (barracks)
+  //================================================================
+
+  run_once {
+    set_timer("PQ_AUTOTRAIN", interval);
+    print_game_msg("Rise of PQ Auto-Train enabled (every " + interval + "s):");
+    if (auto_citizen_level >= 0) {
+      set_auto_peasant_level(auto_citizen_level);
+      print_game_msg("- Auto Citizen: build and gather automation forced on");
+    }
+    if (citizen_idle_threshold > 0) {
+      print_game_msg("- Citizens: batch of " + citizen_batch + " while fewer than " + citizen_idle_threshold + " idle");
+    }
+    if (auto_scholars == 1) {
+      print_game_msg("- Scholars: fill university slots");
+    }
+    if (auto_heavy_infantry == 1 || auto_light_infantry == 1 || auto_archers == 1) {
+      print_game_msg("- Military lines: active");
+    }
+  }
+
+  trigger PQ_AutoTrain(timer_expired("PQ_AUTOTRAIN")) {
+    int p = get_console_player();
+
+    if (citizen_idle_threshold > 0) {
+      if (find_num_idle_unit(p, "Citizen") < citizen_idle_threshold) {
+        train_unit(p, citizen_batch, "Citizen");
+      }
+    }
+
+    if (auto_scholars == 1) {
+      train_unit(p, 1, "Scholar");
+    }
+
+    if (auto_heavy_infantry == 1) {
+      train_unit(p, 1, "Hoplites");
+    }
+    if (auto_light_infantry == 1) {
+      train_unit(p, 1, "Slingers");
+    }
+    if (auto_archers == 1) {
+      train_unit(p, 1, "Bowmen");
+    }
+
+    set_timer("PQ_AUTOTRAIN", interval);
+    enable_trigger("PQ_AutoTrain");
+  }
+}

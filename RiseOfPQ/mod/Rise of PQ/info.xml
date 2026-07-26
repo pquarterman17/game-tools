@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Rise of PQ - epic pacing overhaul -->
+<ROOT>
+	<INFO name="Rise of PQ" description="Epic pacing overhaul: longer ages, higher population caps, more expensive late game. Single-player focused." version="0.1"/>
+	<FILES size="132843" checksum="0" complete="1"><FILE path="data" size="0" directory="1"/><FILE path="data\rules.xml" size="88634" directory="0"/><FILE path="data\techrules.xml" size="44209" directory="0"/></FILES>
+</ROOT>
