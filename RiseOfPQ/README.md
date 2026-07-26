@@ -31,8 +31,8 @@ A standalone game script (selectable in the game-setup screen, like the built-in
 Requires Rise of Nations: Extended Edition (Steam) on Windows.
 
 ```powershell
-git clone https://github.com/pquarterman17/RiseOfPQ.git
-cd RiseOfPQ
+git clone https://github.com/pquarterman17/game-tools.git
+cd game-tools\RiseOfPQ
 
 # 1. Snapshot your game's vanilla files (diff baseline; game files are not shipped in this repo)
 powershell -File tools\snapshot-vanilla.ps1            # add -GameDir if not in the default Steam library
